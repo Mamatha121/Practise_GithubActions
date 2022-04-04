@@ -1,0 +1,58 @@
+name: Audit
+
+on:
+  workflow_dispatch
+  # schedule:
+  #   - cron: '0 4 * * *'
+
+jobs:
+  Audit:
+    runs-on: ubuntu-latest
+    uses: actions/github-script@v6.0.0
+    steps:
+      - name: Get Audit Logs
+          with:
+            github-token: ${{secrets.AUDIT_TOKEN}}
+            script: |
+              let auditLog = await github.request("GET /orgs/northerntrust-internal/audit-log",
+                                   params={
+                                            phrase:'action:repo.rename action:repo.add_member'
+                                            })
+              console.log(auditLog.data)
+    
+      - name : Validate Repositories
+          with:
+            github-token: ${{secrets.AUDIT_TOKEN}}
+            scripts: |
+              let allRepos = await github.request("GET /orgs/northerntrust-internal/repos",
+                  params = { types: 'all', per_page = 100 })
+              let reposRightName = []
+              let reposWrongName = []
+              let reposWithTeam = []
+              let reposWithoutTeam = []
+              console.log(`Total number of Repos : ${allRepos.data.length()}`)
+
+
+              allRepos.data.forEach((repoItem) => {
+                  if ((repoItem.name.startsWith("actions-")) || (/^apm\d{7}-[a-zA-Z]{3}-/.test(repoItem.name)){
+                      reposRightName.push(repoItem.name)
+                  } else {
+                      reposWrongName.push(repoItem.name)
+                  }
+                  if (validateTeamAccess(repoItem)){
+                      reposWithTeam.push(repoItem.name)
+                  } else { reposWithoutTeam.push(repoItem.name) }
+              })
+                  
+              function validateTeamAccess(repo) {
+                  let teamAccess = await github.request(`GET /repos/northerntrust-internal/${repo.name}`,
+                      params = {
+                          per_page: 100
+                      })
+                  if (teamAccess.data.length >= 1) { return True }
+                  else { return False }
+              }
+              console.log(`Repos not following naming convention : ${reposRightName}`)
+              console.log(`Repos with proper naming convention : ${reposWrongName}`)
+              console.log(`Repos with team access : ${reposWithTeam}`)
+              console.log(`Repos without team access : ${reposWithoutTeam}`)
