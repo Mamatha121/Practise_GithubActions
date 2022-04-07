@@ -28,7 +28,7 @@ teamList.forEach((teamItem) => {
     if (suffixes.some(child => teamItem.slug.endsWith(child))) {
         let teamName = teamItem.split("-")[0]
         let teamChild = teamItem.split("-")[1]
-        let idpMapping = await getIDPMapping(teamItem.slug)
+        let idpMapping = await getIDPMapping(teamItem.slug).toLowerCase()
 
         if ((teamItem.parent.slug === teamName) & idpMapping.endsWith(`-${teamName}-${teamChild}`)) {
             teamsCorrect.push(teamItem)
