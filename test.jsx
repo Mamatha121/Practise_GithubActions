@@ -18,7 +18,7 @@ async function getIDPMapping(slug) {
     let idpResp = await github.request(`GET /orgs/northerntrust-internal/teams/${slug}/external-groups`)
     if (idpResp.data.groups.length >= 1) {
         let groups = idpResp.data.groups[0]
-        return groups.group_name
+        return groups.group_name.toLowerCase()
     }
     else { return null }
 }
@@ -26,9 +26,9 @@ console.dir(teamList)
 let suffixes = ["-Admin", "-Maintain", "-Read", "-Triage", "-Write"]
 teamList.forEach((teamItem) => {
     if (suffixes.some(child => teamItem.slug.endsWith(child))) {
-        let teamName = teamItem.split("-")[0]
-        let teamChild = teamItem.split("-")[1]
-        let idpMapping = await getIDPMapping(teamItem.slug).toLowerCase()
+        let teamName = teamItem.slug.split("-")[0]
+        let teamChild = teamItem.slug.split("-")[1]
+        let idpMapping = await getIDPMapping(teamItem.slug)
 
         if ((teamItem.parent.slug === teamName) & idpMapping.endsWith(`-${teamName}-${teamChild}`)) {
             teamsCorrect.push(teamItem)
