@@ -6,9 +6,10 @@ on:
 jobs:
   Validations:
     runs-on: ubuntu-latest
-    uses: actions/github-script@v6.0.0
+    
     steps:
       - name : Validate Repositories
+        uses: actions/github-script@v6.0.0
           with:
             github-token: ${{secrets.AUDIT_TOKEN}}
             scripts: |
@@ -46,6 +47,7 @@ jobs:
               # console.log(`Repos without team access : ${reposWithoutTeam}`) 
       
       - name : Validate Teams
+        uses: actions/github-script@v6.0.0
           with:
             github-token: ${{secrets.AUDIT_TOKEN}}
             scripts: |
