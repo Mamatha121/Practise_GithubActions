@@ -48,7 +48,7 @@ teamList.forEach((teamItem) => {
 
     if (suffixes.some(child => teamItem.slug.endsWith(child))) {
         let splitSlug = teamItem.slug.split("-")
-        let teamName = splitSlug.slice(0,splitSlug.length)
+        let teamName = splitSlug.slice(0,splitSlug.length).join(' ')
         let teamChild = splitSlug.at(-1)
         console.log(`Inside1If ${teamItem.name},${idpMapping}, ${idpMapping.endsWith(`-${teamName}-${teamChild}`)}`)
         if ((teamItem.parent === null) || (idpMapping.length == 0)) {
