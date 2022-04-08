@@ -43,7 +43,7 @@ teamList.forEach((teamItem) => {
     getIDPMapping(teamItem.slug).then((mapping) => {
         // console.log(`In Then - ${mapping}`)
         idpMapping = mapping
-    })
+    
     //(async()=>{idpMapping = await getIDPMapping(teamItem.slug)})()
 
     if (suffixes.some(child => teamItem.slug.endsWith(child))) {
@@ -66,7 +66,7 @@ teamList.forEach((teamItem) => {
             teamsCorrect.push(teamItem.name)
         } else { teamsIncorrect.push(teamItem.name) }
     }
-
+ })
 })
 console.log("Teams following the convention :")
 console.dir(teamsCorrect)
