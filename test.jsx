@@ -47,8 +47,9 @@ teamList.forEach((teamItem) => {
     //(async()=>{idpMapping = await getIDPMapping(teamItem.slug)})()
 
     if (suffixes.some(child => teamItem.slug.endsWith(child))) {
-        let teamName = teamItem.slug.split("-")[0]
-        let teamChild = teamItem.slug.split("-")[1]
+        let splitSlug = teamItem.slug.split("-")
+        let teamName = splitSlug.slice(0,splitSlug.length)
+        let teamChild = splitSlug.at(-1)
         console.log(`Inside1If ${teamItem.name},${idpMapping}, ${idpMapping.endsWith(`-${teamName}-${teamChild}`)}`)
         if ((teamItem.parent === null) || (idpMapping.length == 0)) {
             teamsIncorrect.push(teamItem.name)
