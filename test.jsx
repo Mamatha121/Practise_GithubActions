@@ -17,23 +17,23 @@ let teamsIncorrect = []
 let idpMapping = ''
 
 async function getIDPMapping(slug) {
-    console.log("Inside getIDP",slug)
+    // console.log("Inside getIDP",slug)
     let idpResp = {}
     try {
         idpResp = await github.request(`GET /orgs/northerntrust-internal/teams/${slug}/external-groups`)
     } catch (err) {
-        console.log("error while getting idpMapping")
+        // console.log("error while getting idpMapping")
         return ''
     }
 
     if (idpResp.data.groups.length >= 1) {
-        console.log("IDPResponse length >1", idpResp.data)
+        // console.log("IDPResponse length >1", idpResp.data)
         let groups = idpResp.data.groups[0]
         let groupName = String(groups.group_name).toLowerCase()
         return groupName
     }
     else {
-        console.log("IDPResponse empty", idpResp.data)
+        // console.log("IDPResponse empty", idpResp.data)
         return ''
     }
 }
@@ -41,7 +41,7 @@ async function getIDPMapping(slug) {
 let suffixes = ["-admin", "-maintain", "-read", "-triage", "-write"]
 teamList.forEach((teamItem) => {
     getIDPMapping(teamItem.slug).then((mapping) => {
-        console.log(`In Then - ${mapping}`)
+        // console.log(`In Then - ${mapping}`)
         idpMapping = mapping
     })
     //(async()=>{idpMapping = await getIDPMapping(teamItem.slug)})()
@@ -50,7 +50,7 @@ teamList.forEach((teamItem) => {
         let splitSlug = teamItem.slug.split("-")
         let teamName = splitSlug.slice(0,splitSlug.length).join(' ')
         let teamChild = splitSlug.at(-1)
-        console.log(`Inside1If ${teamItem.name},${idpMapping}, ${idpMapping.endsWith(`-${teamName}-${teamChild}`)}`)
+        console.log(`Inside1If ${teamName},${teamChild},${idpMapping}, -${teamName}-${teamChild}`)
         if ((teamItem.parent === null) || (idpMapping.length == 0)) {
             teamsIncorrect.push(teamItem.name)
         }
@@ -61,7 +61,7 @@ teamList.forEach((teamItem) => {
         }
 
     } else {
-        console.log("Inside1Else ${teamItem.name}")
+        // console.log(`Inside1Else ${teamItem.name}`)
         if ((teamItem.parent === null) & (idpMapping.length == 0)) {
             teamsCorrect.push(teamItem.name)
         } else { teamsIncorrect.push(teamItem.name) }
