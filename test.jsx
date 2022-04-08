@@ -8,7 +8,7 @@ let teamList = await github.paginate(github.rest.teams.list,
             "name": teamItem.parent.name,
             "slug": teamItem.parent.slug,
             "id": teamItem.parent.id
-        }:null
+        } : null
     }))
 )
 
@@ -32,7 +32,10 @@ async function getIDPMapping(slug) {
 
 let suffixes = ["-admin", "-maintain", "-read", "-triage", "-write"]
 teamList.forEach((teamItem) => {
-    getIDPMapping(teamItem.slug).then((mapping) => { idpMapping = mapping })
+    getIDPMapping(teamItem.slug).then((mapping) => {
+        console.log(`In Then - ${mapping}`)
+        idpMapping = mapping
+    })
     //(async()=>{idpMapping = await getIDPMapping(teamItem.slug)})()
     console.log(`Got Idp Mapping -- ${typeof idpMapping} -- ${idpMapping}`)
 
