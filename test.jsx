@@ -50,7 +50,7 @@ teamList.forEach((teamItem) => {
         let splitSlug = teamItem.slug.split("-")
         let teamName = splitSlug.slice(0,splitSlug.length).join(' ')
         let teamChild = splitSlug.at(-1)
-        console.log(`Inside1If ${teamName},${teamChild},${idpMapping}, -${teamName}-${teamChild}`)
+        console.log(`Inside1If ${teamName}---${teamChild}---${idpMapping}, -${teamName}-${teamChild}`)
         if ((teamItem.parent === null) || (idpMapping.length == 0)) {
             teamsIncorrect.push(teamItem.name)
         }
