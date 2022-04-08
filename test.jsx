@@ -20,14 +20,14 @@ async function getIDPMapping(slug) {
     let idpResp = {}
     try {
         idpResp = await github.request(`GET /orgs/northerntrust-internal/teams/${slug}/external-groups`)
-    } catch (err) { return null }
+    } catch (err) { return '' }
 
     if (idpResp.data.groups.length >= 1) {
         let groups = idpResp.data.groups[0]
         let groupName = String(groups.group_name).toLowerCase()
         return groupName
     }
-    else { return null }
+    else { return '' }
 }
 
 let suffixes = ["-admin", "-maintain", "-read", "-triage", "-write"]
@@ -37,27 +37,29 @@ teamList.forEach((teamItem) => {
         idpMapping = mapping
     })
     //(async()=>{idpMapping = await getIDPMapping(teamItem.slug)})()
-    console.log(`Got Idp Mapping -- ${typeof idpMapping} -- ${idpMapping}`)
 
     if (suffixes.some(child => teamItem.slug.endsWith(child))) {
         let teamName = teamItem.slug.split("-")[0]
         let teamChild = teamItem.slug.split("-")[1]
         console.log(`Inside1If ${teamItem.name}, ${idpMapping.endsWith(`-${teamName}-${teamChild}`)}`)
-        if ((teamItem.parent.slug === teamName) & idpMapping.endsWith(`-${teamName}-${teamChild}`)) {
-            teamsCorrect.push(teamItem)
+        if ((teamItem.parent === null)||(idpMapping.length == 0)) {
+            teamsIncorrect.push(teamItem.name)
+        }
+        else if ((teamItem.parent.slug === teamName) & idpMapping.endsWith(`-${teamName}-${teamChild}`)) {
+            teamsCorrect.push(teamItem.name)
         } else {
-            teamsIncorrect.push(teamItem)
+            teamsIncorrect.push(teamItem.name)
         }
 
     } else {
         console.log("Inside1Else ${teamItem.name}")
-        if ((teamItem.parent = null) & (idpMapping = null)) {
-            teamsCorrect.push(teamItem)
-        } else { teamsIncorrect.push(teamItem) }
+        if ((teamItem.parent === null) & (idpMapping.length == 0)) {
+            teamsCorrect.push(teamItem.name)
+        } else { teamsIncorrect.push(teamItem.name) }
     }
 
 })
-// console.log("Teams following the convention :")
-// console.dir(teamsCorrect)
-// console.log("Teams not following convention :")
-// console.dir(teamsIncorrect)
+console.log("Teams following the convention :")
+console.dir(teamsCorrect)
+console.log("Teams not following convention :")
+console.dir(teamsIncorrect)
