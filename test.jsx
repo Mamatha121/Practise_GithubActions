@@ -20,14 +20,14 @@ async function getIDPMapping(slug) {
     let idpResp = {}
     try {
         idpResp = await github.request(`GET /orgs/northerntrust-internal/teams/${slug}/external-groups`)
-    } catch (err) { return null }
+    } catch (err) { return '' }
 
     if (idpResp.data.groups.length >= 1) {
         let groups = idpResp.data.groups[0]
         let groupName = String(groups.group_name).toLowerCase()
         return groupName
     }
-    else { return null }
+    else { return '' }
 }
 
 let suffixes = ["-admin", "-maintain", "-read", "-triage", "-write"]
@@ -37,7 +37,7 @@ teamList.forEach((teamItem) => {
         idpMapping = mapping
     })
     //(async()=>{idpMapping = await getIDPMapping(teamItem.slug)})()
-    console.log(`Got Idp Mapping -- ${typeof idpMapping} -- ${idpMapping}`)
+    console.log(`Got Idp Mapping -- ${typeof idpMapping} -- ${idpMapping} -- ${teamItem.slug}`)
 
     if (suffixes.some(child => teamItem.slug.endsWith(child))) {
         let teamName = teamItem.slug.split("-")[0]
@@ -51,7 +51,7 @@ teamList.forEach((teamItem) => {
 
     } else {
         console.log("Inside1Else ${teamItem.name}")
-        if ((teamItem.parent = null) & (idpMapping = null)) {
+        if ((teamItem.parent === null) & (idpMapping.length == 0)) {
             teamsCorrect.push(teamItem)
         } else { teamsIncorrect.push(teamItem) }
     }
